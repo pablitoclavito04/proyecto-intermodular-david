@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { interviewService, responseService } from '../api';
 import { FiArrowLeft, FiArrowRight, FiX, FiCheck } from 'react-icons/fi';
+import { useThemeStore } from '../store';
+import '../assets/styles/InterviewSession.css';
 
 
 const MicrophoneIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <svg xmlns="http://www.w3.org/2000/svg" className="interview-session__mic-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
   </svg>
 );
@@ -22,6 +24,7 @@ const InterviewSession = () => {
   const { interviewId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isDark } = useThemeStore();
 
   // Estados del formulario
   const [interview, setInterview] = useState(null);
@@ -240,107 +243,107 @@ const InterviewSession = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="interview-session__loading">
+        <div className="interview-session__loading-spinner"></div>
       </div>
     );
   }
   if (!interview || !questions.length) {
-    return <div className="text-center p-8">{t('interview.noInterviews')}</div>;
+    return <div className={`interview-session__empty ${isDark ? 'interview-session__empty--dark' : ''}`}>{t('interview.noInterviews')}</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+    <div className={`interview-session ${isDark ? 'interview-session--dark' : ''}`}>
+      <div className="interview-session__container">
+        <div className="interview-session__header">
+          <div className="interview-session__title-row">
+            <h1 className={`interview-session__title ${isDark ? 'interview-session__title--dark' : ''}`}>
               {interview?.title}
             </h1>
-            <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+            <span className={`interview-session__question-counter ${isDark ? 'interview-session__question-counter--dark' : ''}`}>
               {currentQuestion + 1} / {questions.length}
             </span>
           </div>
-          <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2">
+          <div className={`interview-session__progress-track ${isDark ? 'interview-session__progress-track--dark' : ''}`}>
             <div
-              className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-300"
+              className="interview-session__progress-bar"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+        <div className={`interview-session__card ${isDark ? 'interview-session__card--dark' : ''}`}>
+          <div className="interview-session__question-header">
+            <div className="interview-session__question-number">
               {currentQuestion + 1}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Difficulty: {question?.difficulty || 'unknown'}
+            <p className={`interview-session__question-difficulty ${isDark ? 'interview-session__question-difficulty--dark' : ''}`}>
+              {t('interview.difficulty')}: {question?.difficulty || 'unknown'}
             </p>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+          <h2 className={`interview-session__question-text ${isDark ? 'interview-session__question-text--dark' : ''}`}>
             {question?.questionText || question?.question || 'Question not found'}
           </h2>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <div className="interview-session__answer-section">
+            <label className={`interview-session__answer-label ${isDark ? 'interview-session__answer-label--dark' : ''}`}>
               {t('interview.answer')}
             </label>
 
             {isCompleted ? (
-              <div className="min-h-[50px] p-3 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white mb-4">
-                {responseSaved ? responseSaved : <span className="text-gray-400">{t('interview.noResponse')}</span>}
+              <div className={`interview-session__response-display ${isDark ? 'interview-session__response-display--dark' : ''}`}>
+                {responseSaved ? responseSaved : <span className="interview-session__no-response">{t('interview.noResponse')}</span>}
               </div>
             ) : isInProgress ? (
               <div>
                 {/* Área de entrada con reconocimiento de voz o textarea */}
                 {isConfirming ? (
-                  <div className="min-h-[100px] p-4 rounded bg-indigo-50 dark:bg-indigo-900 border-2 border-indigo-400 text-gray-800 dark:text-white mb-4">
-                    <p className="font-semibold mb-2">Tu respuesta (Pendiente de confirmación):</p>
-                    <p className="italic">{userAnswer}</p>
+                  <div className={`interview-session__confirming-box ${isDark ? 'interview-session__confirming-box--dark' : ''}`}>
+                    <p className="interview-session__confirming-title">{t('interview.pendingConfirmation')}</p>
+                    <p className="interview-session__confirming-text">{userAnswer}</p>
                   </div>
                 ) : (
                   <textarea
                     value={localResponse || userAnswer}
                     onChange={handleResponseChange}
                     disabled={isListening || submitting}
-                    className="w-full border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg p-4 resize-none focus:outline-none focus:border-blue-500 disabled:opacity-50"
+                    className={`interview-session__textarea ${isDark ? 'interview-session__textarea--dark' : ''}`}
                     rows="6"
-                    placeholder={t('Pregunta sin responder.')}
+                    placeholder={t('interview.unansweredQuestion')}
                   />
                 )}
 
                 {/* Estado del reconocimiento de voz */}
                 {voiceStatus && (
-                  <div className="mt-2 p-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900 rounded">
+                  <div className={`interview-session__voice-status ${isDark ? 'interview-session__voice-status--dark' : ''}`}>
                     {voiceStatus}
                   </div>
                 )}
 
                 {/* Tiempos */}
                 {(isListening || isConfirming) && (
-                  <div className="flex justify-between items-center mt-2 px-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>Tiempo de Respuesta: {formatTime(elapsedTime)}</span>
-                    <span>Tiempo Total: {formatTime(totalTime)}</span>
+                  <div className={`interview-session__timers ${isDark ? 'interview-session__timers--dark' : ''}`}>
+                    <span>{t('interview.responseTime')}: {formatTime(elapsedTime)}</span>
+                    <span>{t('interview.totalTime')}: {formatTime(totalTime)}</span>
                   </div>
                 )}
 
                 {/* Botones de acción */}
-                <div className="flex gap-3 mt-4">
+                <div className="interview-session__actions">
                   {isConfirming ? (
                     <>
                       <button
                         onClick={handleRetryAnswer}
-                        className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md px-4 py-2 transition"
+                        className="interview-session__button interview-session__button--retry"
                       >
-                        Reintenta Respuesta
+                        {t('interview.retryAnswer')}
                       </button>
                       <button
                         onClick={handleConfirmAnswer}
-                        className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-4 py-2 transition"
+                        className="interview-session__button interview-session__button--confirm"
                       >
-                        Confirmar Respuesta
+                        {t('interview.confirmAnswer')}
                       </button>
                     </>
                   ) : (
@@ -348,37 +351,35 @@ const InterviewSession = () => {
                       <button
                         onClick={handleListenToggle}
                         disabled={submitting}
-                        className={`flex-1 w-20 h-12 rounded-lg flex items-center justify-center justify-center gap-2 font-semibold transition-all duration-300
-                          ${isListening ? 'bg-red-600 hover:bg-red-700 animate-pulse text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}
-                          disabled:bg-gray-400 disabled:cursor-not-allowed`}
+                        className={`interview-session__button interview-session__button--mic ${isListening ? 'interview-session__button--mic--listening' : ''}`}
                       >
                         <MicrophoneIcon />
-                        {isListening ? 'Detener' : 'Grabar'}
+                        {isListening ? t('interview.stop') : t('interview.record')}
                       </button>
                       <button
                         type="button"
                         onClick={handleSaveResponse}
                         disabled={submitting || localResponse.trim().length === 0}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md px-4 py-2 transition disabled:opacity-50"
+                        className="interview-session__button interview-session__button--save"
                       >
-                        Guardar respuesta
+                        {t('interview.saveResponse')}
                       </button>
                     </>
                   )}
                 </div>
 
-                <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  {!isConfirming && (isListening ? 'Haz clic en el micrófono para detener' : 'Haz clic en el micrófono para grabar tu respuesta')}
+                <p className={`interview-session__hint ${isDark ? 'interview-session__hint--dark' : ''}`}>
+                  {!isConfirming && (isListening ? t('interview.clickMicToStop') : t('interview.clickMicToRecord'))}
                 </p>
               </div>
             ) : null}
           </div>
 
-          <div className="flex gap-4 items-center">
+          <div className="interview-session__nav">
             {currentQuestion > 0 && (
               <button
                 onClick={() => setCurrentQuestion(currentQuestion - 1)}
-                className="flex items-center gap-2 border-2 border-gray-400 px-4 py-2 rounded-lg font-semibold text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className={`interview-session__nav-button ${isDark ? 'interview-session__nav-button--dark' : ''}`}
               >
                 <FiArrowLeft /> {t('interview.previousQuestion')}
               </button>
@@ -386,42 +387,42 @@ const InterviewSession = () => {
             {currentQuestion < questions.length - 1 && (
               <button
                 onClick={() => setCurrentQuestion(currentQuestion + 1)}
-                className="flex items-center gap-2 border-2 border-gray-400 px-4 py-2 rounded-lg font-semibold text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className={`interview-session__nav-button ${isDark ? 'interview-session__nav-button--dark' : ''}`}
               >
                 {t('interview.nextQuestion')} <FiArrowRight />
               </button>
             )}
-            <div className="flex-1"></div>
+            <div className="interview-session__nav-spacer"></div>
             {currentQuestion === questions.length - 1
               ? (isCompleted ? (
                   <button
                     onClick={() => navigate('/interviews')}
-                    className="flex items-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-lg font-semibold transition ml-auto"
+                    className="interview-session__exit-button"
                   >
-                    <FiX /> Salir
+                    <FiX /> {t('interview.exit')}
                   </button>
                 ) : isInProgress && allAnswered ? (
                   <button
                     onClick={handleCompleteInterview}
                     disabled={submitting}
-                    className="flex items-center gap-2 bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2 rounded-lg font-semibold transition ml-auto disabled:opacity-50"
+                    className="interview-session__complete-button"
                   >
-                    <FiCheck /> Completar entrevista
+                    <FiCheck /> {t('interview.completeInterview')}
                   </button>
                 ) : isInProgress ? (
                   <button
                     onClick={() => navigate('/interviews')}
-                    className="flex items-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-lg font-semibold transition ml-auto"
+                    className="interview-session__exit-button"
                   >
-                    <FiX /> Salir
+                    <FiX /> {t('interview.exit')}
                   </button>
                 ) : null)
               : (
                 <button
                   onClick={() => navigate('/interviews')}
-                  className="flex items-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-lg font-semibold transition ml-auto"
+                  className="interview-session__exit-button"
                 >
-                  <FiX /> Salir
+                  <FiX /> {t('interview.exit')}
                 </button>
               )
             }

@@ -156,7 +156,7 @@ const Interviews = () => {
             <form onSubmit={handleCreateInterview} className="interviews__form-grid">
               <input
                 type="text"
-                placeholder="Interview Title"
+                placeholder={t('interview.interviewTitle')}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className={`interviews__form-input ${isDark ? 'interviews__form-input--dark' : ''}`}
@@ -165,7 +165,7 @@ const Interviews = () => {
               />
               <input
                 type="text"
-                placeholder="Profession"
+                placeholder={t('interview.profession')}
                 value={formData.profession}
                 onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
                 className={`interviews__form-input ${isDark ? 'interviews__form-input--dark' : ''}`}
@@ -178,8 +178,8 @@ const Interviews = () => {
                 className={`interviews__form-input ${isDark ? 'interviews__form-input--dark' : ''}`}
                 disabled={formLoading}
               >
-                <option value="ai_generated">AI Generated</option>
-                <option value="custom">Custom</option>
+                <option value="ai_generated">{t('interview.aiGenerated')}</option>
+                <option value="custom">{t('interview.custom')}</option>
               </select>
               <select
                 value={formData.difficulty}
@@ -187,9 +187,9 @@ const Interviews = () => {
                 className={`interviews__form-input ${isDark ? 'interviews__form-input--dark' : ''}`}
                 disabled={formLoading}
               >
-                <option value="junior">Junior</option>
-                <option value="mid">Mid</option>
-                <option value="senior">Senior</option>
+                <option value="junior">{t('interview.junior')}</option>
+                <option value="mid">{t('interview.mid')}</option>
+                <option value="senior">{t('interview.senior')}</option>
               </select>
               <select
                 value={formData.language}
@@ -211,10 +211,10 @@ const Interviews = () => {
                   {formLoading ? (
                     <>
                       <div className="interviews__form-spinner"></div>
-                      Creating...
+                      {t('interview.creating')}
                     </>
                   ) : (
-                    'Create Interview'
+                    t('interview.createInterview')
                   )}
                 </button>
                 <button
@@ -223,7 +223,7 @@ const Interviews = () => {
                   disabled={formLoading}
                   className="interviews__form-button interviews__form-button--cancel"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
               </div>
             </form>
@@ -235,7 +235,7 @@ const Interviews = () => {
             <FiSearch className="interviews__search-icon" />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder={t('interview.search')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`interviews__search-input ${isDark ? 'interviews__search-input--dark' : ''}`}
@@ -263,20 +263,20 @@ const Interviews = () => {
                     {interview.title}
                   </h3>
                   <span className={`interview-card__status interview-card__status--${interview.status === 'completed' ? 'completed' : interview.status === 'in_progress' ? 'in-progress' : 'scheduled'}`}>
-                    {interview.status}
+                    {t(`interview.${interview.status === 'completed' ? 'completed' : interview.status === 'in_progress' ? 'inProgress' : 'scheduled'}`)}
                   </span>
                 </div>
                 <div className="interview-card__info">
                   <div className={`interview-card__info-item ${isDark ? 'interview-card__info-item--dark' : ''}`}>
-                    <span className="interview-card__info-label">Profession:</span>
+                    <span className="interview-card__info-label">{t('interview.profession')}:</span>
                     <span>{interview.profession}</span>
                   </div>
                   <div className={`interview-card__info-item ${isDark ? 'interview-card__info-item--dark' : ''}`}>
-                    <span className="interview-card__info-label">Difficulty:</span>
+                    <span className="interview-card__info-label">{t('interview.difficulty')}:</span>
                     <span>{interview.difficulty}</span>
                   </div>
                   <div className={`interview-card__info-item ${isDark ? 'interview-card__info-item--dark' : ''}`}>
-                    <span className="interview-card__info-label">Score:</span>
+                    <span className="interview-card__info-label">{t('interview.score')}:</span>
                     <span>{interview.totalScore}%</span>
                   </div>
                 </div>
@@ -285,13 +285,13 @@ const Interviews = () => {
                     onClick={() => navigate(`/interview/${interview._id}`)}
                     className="interview-card__button interview-card__button--view"
                   >
-                    <FiEye /> View
+                    <FiEye /> {t('interview.view')}
                   </button>
                   <button
                     onClick={() => handleDeleteInterview(interview._id)}
                     className="interview-card__button interview-card__button--delete"
                   >
-                    <FiTrash2 />
+                    <FiTrash2 /> {t('common.delete')}
                   </button>
                 </div>
               </div>
